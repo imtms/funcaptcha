@@ -1,6 +1,6 @@
-package funcaptcha
-
 // https://github.com/fingerprintjs/fingerprintjs/blob/master/src/utils/hashing.ts
+
+package funcaptcha
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 )
 
 //goland:noinspection SpellCheckingInspection
-func getWindowHash() string {
+func getWindowHash() string { // return aA(b1[df(f_a_hT.e)]()[df(f_a_hT.f)]('|'), 0x1a4);
 	// Object.getOwnPropertyNames(window);
 	b1 := []string{
 		"ALFCCJS",
@@ -1146,7 +1146,7 @@ func getWindowHash() string {
 	return getMurmur128String(result, 420)
 }
 
-func getWindowProtoChainHash() string {
+func getWindowProtoChainHash() string { // return this[dh(f_a_hU.f)](b0[dh(f_a_hU.g)]('|'), 0x1a4);
 	// Object.getPrototypeOf(window);
 	b0 := []string{
 		"TEMPORARY",
@@ -1360,4 +1360,21 @@ func x64hash128(key string, seed uint32) string {
 	h2 = x64Add(h2, h1)
 
 	return fmt.Sprintf("%08x%08x%08x%08x", h1[0], h1[1], h2[0], h2[1])
+}
+
+func getCFPHash(cfp string) uint32 {
+	//'this is the cfp: canvas xxx base64 image'.split('').reduce((b5, b6) => {
+	//	return b5 = (b5 << 5) - b5 + b6.charCodeAt(0), b5 & b5;
+	//}, 0);
+
+	var b5 uint32
+	for _, b6 := range cfp {
+		b5 = (b5 << 5) - b5 + uint32(b6)
+		b5 &= b5
+	}
+	return b5
+}
+
+func getIfeHash() string {
+	return x64hash128(strings.Join(getFeList(), ", "), 38)
 }
