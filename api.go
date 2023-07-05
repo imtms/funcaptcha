@@ -275,7 +275,6 @@ var (
 		getFe(),
 		getIfeHash(),
 	)
-	bx20230702 = fmt.Sprintf(`[{"key":"fe","value":%s}]`, getFe())
 )
 
 //goland:noinspection GoUnhandledErrorResult
@@ -293,12 +292,17 @@ func SetTLSClient(cli *tls_client.HttpClient) {
 	client = cli
 }
 
-//goland:noinspection SpellCheckingInspection,GoUnhandledErrorResult
 func GetOpenAIToken() (string, error) {
-	bda := getBDA()
-	bda = base64.StdEncoding.EncodeToString([]byte(bda))
+	return sendRequest("")
+}
+
+//goland:noinspection SpellCheckingInspection,GoUnhandledErrorResult
+func sendRequest(bda string) (string, error) {
+	if bda == "" {
+		bda = getBDA()
+	}
 	form := url.Values{
-		"bda":          {bda},
+		"bda":          {base64.StdEncoding.EncodeToString([]byte(bda))},
 		"public_key":   {"35536E1E-65B4-4D96-9D97-6ADB7EFF8147"},
 		"site":         {"https://chat.openai.com"},
 		"userbrowser":  {bv},
@@ -340,8 +344,25 @@ func GetOpenAIToken() (string, error) {
 
 //goland:noinspection SpellCheckingInspection
 func getBDA() string {
-	bx = bx20230702
-	bt := time.Now().UnixMicro() / 1000000
-	bw := strconv.FormatInt(bt-(bt%21600), 10)
+	bt := getBt()
+	bw := getBw(bt)
+	return encrypt(bx, bv+bw)
+}
+
+func getBt() int64 {
+	return time.Now().UnixMicro() / 1000000
+}
+
+func getBw(bt int64) string {
+	return strconv.FormatInt(bt-(bt%21600), 10)
+}
+
+func GetOpenAITokenWithBx(bx string) (string, error) {
+	return sendRequest(getBdaWitBx(bx))
+}
+
+func getBdaWitBx(bx string) string {
+	bt := getBt()
+	bw := getBw(bt)
 	return encrypt(bx, bv+bw)
 }
