@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,14 @@ import (
 func main() {
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
-		token, _ := funcaptcha.GetOpenAITokenWithBx(`[{"key":"enhanced_fp","value":[{"key":"navigator_battery_charging","value":true}]},{"key":"fe","value":["DNT:1","L:zh-CN","D:24","PR:1","S:1920,1080","AS:1920,1080","TO:-480","SS:true","LS:true","IDB:true","B:false","ODB:true","CPUC:unknown","PK:Linux x86_64","CFP:1186665521","FR:false","FOS:false","FB:false","JSF:Arial,Courier,Courier New,Helvetica,Times,Times New Roman","P:Chrome PDF Viewer,Chromium PDF Viewer,Microsoft Edge PDF Viewer,PDF Viewer,WebKit built-in PDF","T:0,false,false","H:16","SWF:false"]}]`)
+		resp, err := http.Get("https://bx.tms.im/")
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"status": "bx error",
+			})
+		}
+		bx, _ := io.ReadAll(resp.Body)
+		token, _ := funcaptcha.GetOpenAITokenWithBx(string(bx))
 		c.JSON(http.StatusOK, gin.H{
 			"token": token,
 		})
