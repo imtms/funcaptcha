@@ -1,4 +1,4 @@
-module github.com/linweiyuan/funcaptcha
+module github.com/imtms/funcaptcha
 
 go 1.20
 

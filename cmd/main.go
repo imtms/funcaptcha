@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/linweiyuan/funcaptcha"
+	"github.com/imtms/funcaptcha"
 )
 
 var url string
