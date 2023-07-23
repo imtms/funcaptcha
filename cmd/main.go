@@ -14,7 +14,7 @@ var ok bool
 
 func init() {
 	if url, ok = os.LookupEnv("BX_URL"); !ok {
-		url = "https://bx.tms.im"
+		url = "https://bx.tms.im/202307"
 	}
 }
 
